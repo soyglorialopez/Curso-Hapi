@@ -21,15 +21,15 @@ _Estas instrucciones te permitirán obtener una copia del proyecto en funcionami
  
  *Coneccion con firebase
  
-El proyecto usa como BD firebase, para conectarte desde tu codio tienes que tener una credencial.
- sigue estos pasos para la coneccion 
-  -> Crea un archivo llamado config en el directorio clonado 
-  -> Ingresa a firebase con tu cuenta, vas a la consola
-  -> Agregas un nuevo pryecto con "+ add Project" // ingresas al project y vas a 
-  -> project setting > service Account
-  ->creas un Firebase Admin SDK, con la opcion seleccionada de Node.js 
-precionas "Generate new Private Key" //es la llave con la cual te podras conectar a FireBase
-*Se descargara automaticamente en tu mauina un archivo json.
+El proyecto usa como BD firebase, para conectarte desde tu codio tienes que tener una credencial. <br>
+ sigue estos pasos para la coneccion  <br>
+  -> Crea un archivo llamado config en el directorio clonado  <br>
+  -> Ingresa a firebase con tu cuenta, vas a la consola  <br>
+  -> Agregas un nuevo pryecto con "+ add Project" // ingresas al project y vas a  <br>
+  -> project setting > service Account <br>
+  ->creas un Firebase Admin SDK, con la opcion seleccionada de Node.js  <br>
+precionas "Generate new Private Key" //es la llave con la cual te podras conectar a FireBase <br>
+*Se descargara automaticamente en tu mauina un archivo json. <br>
 -> Ese archivo lo llevas a config y listo
  
 
