@@ -1,0 +1,115 @@
+MANEJO DE ERRORES
+Para el manejo general de errores con Hapi usamos 
+la instrucción process.on( '<tipo de error>', ( <error> ) => { <callback> } ) en el script principal. En el callback de la función, error devuelve un objeto con los detalles del error capturado. Los tipos de errores que vamos a manejar en el proyecto son: unhandledRejection y unhandledException. Estos dos tipos de errores son los más comunes y los que 
+se aconseja manejar como mínimo en cualquier aplicación.
+
+Los métodos del servidor en Hapi, son métodos o funciones que pueden ser accedidos desde cualquier ruta 
+de la aplicación de manera global.
+ registramos cada m[etodo en el server con la instrucción 
+ server.method( '<nombre del método>', methods.<metodo creado> ), ya luego en el código podremos 
+ acceder a estos métodos a través del objeto request de Hapi.
+
+ Usar los métodos de servidor que creamos en la clase pasada es tan simple como acceder a req.server.methods:
+ req.server.methods.<nombre método>( args )
+
+ CACHE
+ Internamente Hapi maneja el caché de las aplicaciones usando un módulo llamado CatBox que ya viene integrado en el core del
+ framework. Este módulo utiliza varios modos de caching; por defecto, Hapi implementa el caché de memoria.
+ También es posible ampliar las funcionalidades del uso de caché en nuestras aplicaciones instalando y configurando otros módulos
+
+ Para habilitar el uso de caching del lado del cliente con Hapi basta con agregar la propiedad options en la definición de cada ruta y
+ definir el tiempo de expiración con expiresIn y el tipo de privacidad con privacy.
+
+ ...
+'options': {
+  'expiresIn': <duracion>, // en milisegundos
+  'privacy'  : <tipo privacidad>
+}
+
+//esto no sirve para que no bombadeomos nuestra base de dato constantemente
+
+Nos apoyaremos en los métodos de servidor que aprendimos en clases anteriores para definir el uso de caché en el backend de nuestra
+aplicación, ya que Hapi permite hacer caching del resultados de este tipo de métodos al momento de registrarlos en el script principal:
+server.method( '<nombre método>', methods.<metodo>, {
+'cache': {
+  'expiresIn': <duracion>,
+  'generateTimeout': <timeout> //la idea de esta propiedad es que si el metodo  falla despeus de este tiempo se va a generar un error
+}
+
+Logging con Good - Monitoreando el servidor
+El proceso de registrar los eventos que suceden internamente en nuestra aplicación, también conocido como logging, 
+, es un aspecto técnico bastante habitual en entornos de producción de la vida real.
+
+Hapi incluye un método .log( args ) tanto en el objeto server, como en request y en response que nos permiten un registro muy básico
+de eventos; sin embargo, la práctica recomendada es hacer logging con un módulo adicional llamado Good y una dependencia para el
+manejo de transporters llamada good-console.
+
+
+la implementación es tan simple como ejecutar la misma instrucción server.log( '<etiqueta o tag>', <mensaje> )
+donde <mensaje> puede ser una cadena de texto o un objeto.
+
+. Recuerda que el método log también está disponible en los objetos request y response.
+
+Estrategías de autenticación - Asegurando el API REST
+
+Con el objeto de restringir el acceso a nuestra API para que solo los usuarios registrados en nuestra base de datos
+puedan hacer usa de ella, implementaremos una estrategia de autenticación básica de Hapi, para lo cual será
+necesario instalar un módulo adicional llamado hapi-auth-basic.
+
+Una vez instalado, requerido y registrado el módulo hapi-auth-basic en el script de nuestro plugin de API REST,
+debemos implementarlo de la siguiente manera:
+server.auth.strategy('simple', 'basic', { 'validate': validateAuth })
+
+Donde simple es el nombre de la estrategia de autenticación, basic es el tipo (asociado al módulo que instalamos) y
+validateAuth es el método en el que definiremos la lógica de validación de los usuarios. Este último de forma muy
+similar a como lo hicimos antes en el método validate del modelo users en nuestra aplicación.
+De esta manera, cuando se intente acceder a cualquiera de las rutas definidas para nuestra API REST, el navegado
+solicitará los datos de autenticación usuario y password y solo devolverá resultados útiles cuando las credenciales obtenidas de la autenticación sean válidas.
+
+Seguridad básica - Asegurando el servidor contra CSRF
+Una de las vulnerabilidades más comunes en cualquier servidor o sitio web, es la Falsificación de Petición en Sitios
+Cruzados o CSRF por sus sigles del inglés Cross-site request forgery, que es un tipo de ataque en el que son
+ransmitidos comandos no autorizados por un usuario del sitio web en el que deberíamos confiar.
+
+Para atender y corregir esta vulnerabilidad incorporaremos a nuestro proyecto un módulo adicional de Hapi llamado
+crumb que utiliza un token de validación para cada una de las rutas accedidas por los usuarios.
+
+await server.register({
+  'plugin': crumb, 
+  'options': {
+    'cookieOptions': {
+      'isSecure': process.env.NODE_ENV === 'prod'
+    }
+  }
+})
+
+Crumb utiliza una cookie para realizar la validación del token en cada una de las rutas de nuestra aplicación y la
+contrasta c
+on el valor de un input de tipo hidden y de nombre crumb, que debe estar presente en cada una de las
+vistas.
+
+La propiedad isSecure estaría entonces activa (en true) cuando estemos en el entorno de producción e inactiva (en false)
+mientras estemos en el entorno de desarrollo. Cuando no está presente el input de validación o su valor no es el
+correcto, el servidor devuelve un código de error 403 al browser, indicando que el acceso está prohibido o no está autorizdo
+
+
+Seguridad básica - Asegurando el servidor contra XSS
+Otra de las vulnerabilidades que es muy común es XSS o Cross-site scripting, que es un tipo de ataque de seguridad
+por inyección en el que un atacante inyecta datos o algún script o códio malicioso desde otro sitio web diferente.
+Para manejar y corregir esta vulnerabilidad en la seguridad de nuestra aplicación implementaremos la estrategia de
+CSP o Content Security Policy para definir específicamente los orígenes desde los cuales vamos a permitir la
+ejecución de scripts o el acceso a recursos desde y hacia nuestra aplicación. Para esto usaremos un par de plugins
+adicionales: Blankie y scooter (scooter por ser dependencia de blankie).
+Finalmente, al acceder a nuestra aplicación, notaremos que sólo serán permitidos los scripts y recursos que provengan
+desde las fuentes explícitamente definidas en las opciones indicadas al registrar el plugin, de lo contrario
+simplemente no se cargarán.
+
+Depuración del proyecto
+ara depurar el código del proyecto solo hace falta iniciar el servidor de node con la siguiente instrucción:
+node --inspect index.js
+Se lanzará el servidor como de costumbre, pero adicionalmente se creará un servidor para la interfaz de depuración que 
+podemos acceder desde el navegador Google Chrome.
+
+Específicamente se podrá ver un icono de NodeJS al inicio de la barra de menú del Inspector de elementos, y al hacer clic 
+sobre este, se abrirá una consola de DevTools dedicada para la depuración de Node.
+ Agregamos luego el proyecto al workspace y estamos listos para iniciar la depuración.
