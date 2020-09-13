@@ -1,11 +1,11 @@
 'use strict'
 
 const firebase = require('firebase-admin');
-const serviceAccount = require('../config/platzioverflow-ebf8e-firebase-adminsdk-tsfcq-488bd508c7.json');
+const serviceAccount = require('../config/*archivo.json*'); //aqui ira el nombre del archivo json que se descargo una vez creado la llave en firebase
 
 firebase.initializeApp({
     credential: firebase.credential.cert(serviceAccount),
-    databaseURL: 'https://platzioverflow-ebf8e.firebaseio.com/'
+    databaseURL: '*url*' //aqui ira la url de tu BD, esta en tu cuenta de firebase > RealTime DataBase > Data
 });
 
 
