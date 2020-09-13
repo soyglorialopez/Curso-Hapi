@@ -1,8 +1,8 @@
 # Curso de Hapi
 
-Pagina Tipo Stack OveFlow, en la cual puedes hacer preguntas y responder preguntas.
-Podras Crearte una cuenta para ser ususario y hacer login.
-Ademas prorcionamos una API para que terceros puedan utlizar la plataforma.
+Pagina Tipo Stack OveFlow, en la cual puedes hacer preguntas y responder preguntas.  <br>
+Podras Crearte una cuenta para ser ususario y hacer login. <br>
+Ademas proporcionamos una API para que terceros puedan utlizar la plataforma.
 
 ## Comenzando 🚀
 
@@ -19,17 +19,17 @@ _Estas instrucciones te permitirán obtener una copia del proyecto en funcionami
  npm install
  ```
  
- *Coneccion con firebase
+ # Conección con firebase
  
-El proyecto usa como BD firebase, para conectarte desde tu codio tienes que tener una credencial. <br>
- sigue estos pasos para la coneccion  <br>
-  -> Crea un archivo llamado config en el directorio clonado  <br>
+El proyecto usa como BD firebase, para conectarte desde tu codigo tienes que tener una credencial. <br>
+ Sigue estos pasos para la coneccion  <br>
+  -> Crea un directorio llamado config en el directorio clonado  <br>
   -> Ingresa a firebase con tu cuenta, vas a la consola  <br>
-  -> Agregas un nuevo pryecto con "+ add Project" // ingresas al project y vas a  <br>
+  -> Agregas un nuevo prpyecto con "+ add Project" // ingresas al project y vas a  <br>
   -> project setting > service Account <br>
   ->creas un Firebase Admin SDK, con la opcion seleccionada de Node.js  <br>
 precionas "Generate new Private Key" //es la llave con la cual te podras conectar a FireBase <br>
-*Se descargara automaticamente en tu mauina un archivo json. <br>
+*Se descargara automaticamente en tu maquina un archivo json. <br>
 -> Ese archivo lo llevas a config y listo
  
 
